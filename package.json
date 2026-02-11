@@ -6,9 +6,9 @@
         "packages/*"
     ],
     "scripts": {
-        "dev:web": "npm run dev --workspaces=apps/web",
-        "dev:api": "npm run dev --workspaces=apps/api",
-        "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\""
+        "dev:client": "npm run dev --workspaces=client",
+        "dev:server": "npm run dev --workspaces=server",
+        "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
     },
     "devDependencies": {
         "concurrently": "^9.2.1",
