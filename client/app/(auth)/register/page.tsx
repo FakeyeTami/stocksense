@@ -18,6 +18,8 @@ import {
 import { Field, FieldGroup, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import api from "@/lib/api";
 
 const RegisterFormSchema = z
     .object({
@@ -47,11 +49,21 @@ export default function Register() {
         },
     });
 
-    function onSubmit(data: RegisterFormSchema) {
-        toast("Login submitted", {
-            description: `${data.email}`,
-        });
-    }
+    const onSubmit = async (data: RegisterFormSchema) => {
+        try {
+            const response = await api.post("/api/v1/auth/register", data);
+
+            toast("Registered successfully", {
+                description: `Welcome ${data.firstName}!`,
+            });
+            return response.data;
+        } catch (error: any) {
+            toast("Login failed", {
+                description:
+                    error.response?.data?.message || "Something went wrong",
+            });
+        }
+    };
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-gray-50">

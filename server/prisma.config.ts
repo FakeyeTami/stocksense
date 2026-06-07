@@ -1,6 +1,7 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
+import * as dotenv from "dotenv";
 import type { PrismaConfig } from "prisma";
+
+dotenv.config();
 
 export default {
     schema: "prisma/schema.prisma",
@@ -8,6 +9,6 @@ export default {
         path: "prisma/migrations",
     },
     datasource: {
-        url: process.env.DATABASE_URL!,
+        url: "postgresql://postgres:tamicodes@localhost:5432/stocksense",
     },
 } satisfies PrismaConfig;

@@ -1,22 +1,18 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { validateRequest } from "../middlewares/validate.middleware";
+import { loginSchema, registerSchema } from "../schema/auth.schema";
+import {
+    handleLogin,
+    handleRegister,
+    handleLogout,
+} from "../controllers/auth.controller";
 
-const router = Router();
+const authRouter = Router();
 
-router.post("/register", (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    // TODO: add register logic
-    res.json({ message: "register route" });
-});
+authRouter.post("/register", validateRequest(registerSchema), handleRegister);
 
-router.post("/login", (req: Request, res: Response) => {
-    const { email, password } = req.body;
-    // TODO: add login logic
-    res.json({ message: "login route" });
-});
+authRouter.post("/login", validateRequest(loginSchema), handleLogin);
 
-router.post("/logout", (_req: Request, res: Response) => {
-    // TODO: add logout logic
-    res.json({ message: "logout route" });
-});
+authRouter.post("/logout", handleLogout);
 
-export default router;
+export default authRouter;

@@ -8,9 +8,11 @@ generator client {
 
 model User {
     id  String @id @default(uuid())
-    name    String?
+    firstName String
+    lastName String
+    phoneNo  String
     email   String  @unique
-    password_hash   String?
+    hashedPassword   String?
     role    Role    @default(STAFF)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

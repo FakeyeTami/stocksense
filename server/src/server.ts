@@ -1,10 +1,11 @@
-import * as dotenv from "dotenv";
-import * as express from "express";
-import * as cors from "cors";
-import { connectDB } from "./config/db";
-import authRoutes from "./routes/auth.route";
-
+import dotenv from "dotenv";
 dotenv.config();
+
+import express from "express";
+import cors from "cors";
+import { connectDB } from "./config/db";
+import authRouter from "./routes/auth.route";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 // app config
 const app = express();
@@ -16,10 +17,12 @@ app.use(cors());
 connectDB();
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.get("/api/health", (_req: any, res: any) => {
+app.use("/api/v1/auth", authRouter);
+app.get("/health", (_req: any, res: any) => {
     res.json({ status: "ok" });
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
