@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,8 +24,8 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import api from "@/lib/api";
+import { useAuthStore } from "@/store/auth.store";
 
 const loginFormSchema = z.object({
     email: z.string().email("Please enter a valid email."),
@@ -34,6 +35,9 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 export default function Login() {
+    const { setUser } = useAuthStore();
+    const router = useRouter();
+
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginFormSchema),
         defaultValues: {
@@ -45,10 +49,11 @@ export default function Login() {
     const onSubmit = async (data: LoginFormValues) => {
         try {
             const response = await api.post("/api/v1/auth/login", data);
+            setUser(response.data.user);
             toast("Login successful", {
                 description: `Welcome back ${response.data.user.firstName}!`,
             });
-            return response.data;
+            router.push("../../dashboard");
         } catch (error: any) {
             toast("Login failed", {
                 description:
