@@ -1,12 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -15,10 +16,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldGroup, FieldError } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
 import api from "@/lib/api";
 
 const RegisterFormSchema = z
