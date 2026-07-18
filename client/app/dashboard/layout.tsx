@@ -1,5 +1,5 @@
-import { SideBar } from "@/components/dashboard/sidebar";
-import { TopBar } from "@/components/dashboard/top-bar";
+import { SideBar } from "@/components/nav/sidebar";
+import { TopBar } from "@/components/nav/top-bar";
 import React from "react";
 
 export default function DashboardLayout({

@@ -1,7 +1,7 @@
 import { BellRing, Store } from "lucide-react";
-import { AvatarDropdown } from "../avatar-dropdown";
-import { QuickActionsMenu } from "../nav/quick-actions-menu";
 import { Button } from "../ui/button";
+import { AvatarDropdown } from "./avatar-dropdown";
+import { QuickActionsMenu } from "./quick-actions-menu";
 
 export function TopBar() {
     return (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuthStore } from "@/store/auth.store";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 export function AvatarDropdown() {
     const { user } = useAuthStore();
@@ -44,7 +44,7 @@ export function AvatarDropdown() {
                             />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col gap-1 text-sm p-2.5">
+                        <div className="flex flex-col gap-0.5 text-sm p-2.5">
                             <h6 className="font-semibold">{`${user?.firstName} ${user?.lastName}`}</h6>
                             <p className="font-light uppercase">{user?.role}</p>
                         </div>
