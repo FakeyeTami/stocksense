@@ -1,25 +1,79 @@
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model User {
-    id  String @id @default(uuid())
-    firstName String
-    lastName String
-    phoneNo  String
-    email   String  @unique
-    hashedPassword   String?
-    role    Role    @default(STAFF)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+  id             String   @id @default(uuid())
+  firstName      String
+  lastName       String
+  phoneNo        String
+  email          String   @unique
+  hashedPassword String?
+  role           Role     @default(STAFF)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 enum Role {
-    OWNER
-    MANAGER
-    STAFF
+  OWNER
+  MANAGER
+  STAFF
+}
+
+model Product {
+  id String @id @default(cuid())
+
+  // Basic Information
+  name        String
+  description String?
+  brand       String?
+  model       String?
+
+  // Relationships
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  // Pricing
+  costPrice    Decimal
+  sellingPrice Decimal
+
+  // Inventory
+  stock     Int
+  lowStock  Int
+  available Boolean @default(true)
+
+  // Product Details
+  sku          String    @unique
+  taxRate      Decimal?
+  expiryDate   DateTime?
+  warranty     String?
+  hsnCode      String?
+  returnPolicy String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  images ProductImage[]
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String @unique
+
+  products Product[]
+}
+
+model ProductImage {
+  id String @id @default(cuid())
+
+  url String
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }
