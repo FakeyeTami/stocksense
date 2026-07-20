@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { BellRing, Store } from "lucide-react";
+<<<<<<< HEAD
+=======
+import { Button } from "../ui/button";
+import { SidebarTrigger } from "../ui/sidebar";
+>>>>>>> feature/dashboard
 import { AvatarDropdown } from "./avatar-dropdown";
 import { QuickActionsMenu } from "./quick-actions-menu";
 
