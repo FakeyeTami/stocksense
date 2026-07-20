@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { SidebarSection } from "@/types/sidebar-section.types";
 import {
     Bot,
@@ -21,7 +22,6 @@ import {
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
 
 export function SideBar() {
     const sidebarNavigation: SidebarSection[] = [
