@@ -1,5 +1,5 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { OverviewCardProps } from "@/types/overview-card.types";
-import { Card, CardContent } from "../ui/card";
 
 export function OverviewCard({
     title,

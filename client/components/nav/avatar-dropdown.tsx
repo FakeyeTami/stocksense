@@ -1,8 +1,7 @@
 "use client";
 
-import { useAuthStore } from "@/store/auth.store";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,7 +9,8 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore } from "@/store/auth.store";
 
 export function AvatarDropdown() {
     const { user } = useAuthStore();

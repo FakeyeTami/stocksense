@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+import { Button } from "@/components/ui/button";
+=======
+import { Separator } from "@/components/ui/separator";
+>>>>>>> feature/dashboard
 import { SidebarSection } from "@/types/sidebar-section.types";
 import {
     Bot,
@@ -21,7 +26,19 @@ import {
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
+<<<<<<< HEAD
+=======
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+} from "../ui/sidebar";
+>>>>>>> feature/dashboard
 
 export function SideBar() {
     const sidebarNavigation: SidebarSection[] = [
@@ -41,7 +58,7 @@ export function SideBar() {
                 {
                     label: "Products",
                     icon: Box,
-                    href: "/products",
+                    href: "/dashboard/products",
                 },
                 {
                     label: "Low Stock",
@@ -168,28 +185,74 @@ export function SideBar() {
     ];
 
     return (
-        <nav className="flex flex-col gap-4 overflow-auto scroll-auto w-full">
-            {sidebarNavigation.map((section) => (
-                <section key={section.title} className="flex flex-col gap-2">
-                    <h6 className="text-xs font-bold">{section.title}</h6>
-                    <ul>
-                        {section.items.map(({ label, href, icon: Icon }) => (
-                            <li key={label} className="font-medium text-sm">
-                                <Button
-                                    asChild
-                                    variant="ghost"
-                                    className="w-full justify-start"
+        <Sidebar>
+            <SidebarHeader className="flex items-center justify-center">
+                <h1>StockSense</h1>
+            </SidebarHeader>
+            <Separator />
+            <SidebarContent className="p-3">
+                {sidebarNavigation.map((group) => (
+                    <SidebarGroup key={group.title}>
+                        <SidebarGroupLabel className="text-xs font-bold">
+                            {group.title}
+                        </SidebarGroupLabel>
+                        <SidebarMenu>
+                            {group.items.map(({ label, href, icon: Icon }) => (
+                                <SidebarMenuItem
+                                    key={label}
+                                    className="font-medium text-sm"
                                 >
-                                    <Link href={href}>
-                                        <Icon size={16} />
-                                        {label}
-                                    </Link>
-                                </Button>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            ))}
-        </nav>
+                                    <SidebarMenuButton asChild className="pl-4">
+                                        <Link href={href}>
+                                            <Icon />
+                                            <span>{label}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                ))}
+            </SidebarContent>
+        </Sidebar>
+
+        // <Sidebar
+        //     side="left"
+        //     className="flex flex-col gap-4 overflow-auto scroll-auto w-full"
+        // >
+        //     <SidebarHeader />
+        //     <SidebarContent>
+        //         {sidebarNavigation.map((section) => (
+        //             <SidebarGroup
+        //                 key={section.title}
+        //                 className="flex flex-col gap-2"
+        //             >
+        //                 <SidebarGroupLabel className="text-xs font-bold">
+        //                     {section.title}
+        //                 </SidebarGroupLabel>
+        //                 <SidebarMenu>
+        //                     {section.items.map(
+        //                         ({ label, href, icon: Icon }) => (
+        //                             <SidebarMenuItem
+        //                                 key={label}
+        //                                 className="font-medium text-sm"
+        //                             >
+        //                                 <SidebarMenuButton
+        //                                     asChild
+        //                                     className="w-full justify-start"
+        //                                 >
+        //                                     <Link href={href}>
+        //                                         <Icon size={16} />
+        //                                         {label}
+        //                                     </Link>
+        //                                 </SidebarMenuButton>
+        //                             </SidebarMenuItem>
+        //                         ),
+        //                     )}
+        //                 </SidebarMenu>
+        //             </SidebarGroup>
+        //         ))}
+        //     </SidebarContent>
+        // </Sidebar>
     );
 }
