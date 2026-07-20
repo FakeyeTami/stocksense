@@ -1,13 +1,24 @@
 import type { Metadata } from "next";
-import { Lato } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "sonner";
+import "./globals.css";
 
-const lato = Lato({
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
+
+const fontSans = IBM_Plex_Sans({
     subsets: ["latin"],
-    variable: "--font-lato",
-    weight: ["300", "400", "700", "900"],
-    display: "swap",
+    variable: "--font-sans",
+});
+
+const fontSerif = IBM_Plex_Serif({
+    subsets: ["latin"],
+    variable: "--font-serif",
+    weight: "100",
+});
+
+const fontMono = IBM_Plex_Mono({
+    subsets: ["latin"],
+    variable: "--font-mono",
+    weight: "100",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +34,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${lato.variable} font-sans antialiased`}>
+            <body
+                className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}
+            >
                 {children}
                 <Toaster />
             </body>
