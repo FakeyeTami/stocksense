@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { QuickAction } from "@/types/quick-actions.types";
 import {
     DollarSign,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react/jsx-runtime";
+import { Button } from "../ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,

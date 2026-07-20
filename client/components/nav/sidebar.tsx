@@ -18,12 +18,12 @@ import {
     LayoutList,
     ReceiptText,
     ShoppingBag,
-    Sidebar,
     TrendingDown,
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 import {
+    Sidebar,
     SidebarContent,
     SidebarGroup,
     SidebarGroupLabel,
