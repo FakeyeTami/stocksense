@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
-
-import { IBM_Plex_Mono, IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 
 const fontSans = IBM_Plex_Sans({
     subsets: ["latin"],
     variable: "--font-sans",
+    weight: ["400", "500", "600", "700"],
 });
 
 const fontSerif = IBM_Plex_Serif({
     subsets: ["latin"],
     variable: "--font-serif",
-    weight: "100",
+    weight: ["400", "500", "700"],
 });
 
 const fontMono = IBM_Plex_Mono({
     subsets: ["latin"],
     variable: "--font-mono",
-    weight: "100",
+    weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
