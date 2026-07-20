@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Button } from "@/components/ui/button";
-=======
 import { Separator } from "@/components/ui/separator";
->>>>>>> feature/dashboard
 import { SidebarSection } from "@/types/sidebar-section.types";
 import {
     Bot,
@@ -22,14 +18,12 @@ import {
     LayoutList,
     ReceiptText,
     ShoppingBag,
+    Sidebar,
     TrendingDown,
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
-<<<<<<< HEAD
-=======
 import {
-    Sidebar,
     SidebarContent,
     SidebarGroup,
     SidebarGroupLabel,
@@ -38,7 +32,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "../ui/sidebar";
->>>>>>> feature/dashboard
 
 export function SideBar() {
     const sidebarNavigation: SidebarSection[] = [
@@ -215,44 +208,5 @@ export function SideBar() {
                 ))}
             </SidebarContent>
         </Sidebar>
-
-        // <Sidebar
-        //     side="left"
-        //     className="flex flex-col gap-4 overflow-auto scroll-auto w-full"
-        // >
-        //     <SidebarHeader />
-        //     <SidebarContent>
-        //         {sidebarNavigation.map((section) => (
-        //             <SidebarGroup
-        //                 key={section.title}
-        //                 className="flex flex-col gap-2"
-        //             >
-        //                 <SidebarGroupLabel className="text-xs font-bold">
-        //                     {section.title}
-        //                 </SidebarGroupLabel>
-        //                 <SidebarMenu>
-        //                     {section.items.map(
-        //                         ({ label, href, icon: Icon }) => (
-        //                             <SidebarMenuItem
-        //                                 key={label}
-        //                                 className="font-medium text-sm"
-        //                             >
-        //                                 <SidebarMenuButton
-        //                                     asChild
-        //                                     className="w-full justify-start"
-        //                                 >
-        //                                     <Link href={href}>
-        //                                         <Icon size={16} />
-        //                                         {label}
-        //                                     </Link>
-        //                                 </SidebarMenuButton>
-        //                             </SidebarMenuItem>
-        //                         ),
-        //                     )}
-        //                 </SidebarMenu>
-        //             </SidebarGroup>
-        //         ))}
-        //     </SidebarContent>
-        // </Sidebar>
     );
 }
