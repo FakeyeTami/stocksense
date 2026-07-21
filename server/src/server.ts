@@ -1,11 +1,12 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
 import cors from "cors";
+import express from "express";
 import { connectDB } from "./config/db";
-import authRouter from "./routes/auth.route";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
+import authRouter from "./routes/auth.route";
+import productsRouter from "./routes/products.route";
 
 // app config
 const app = express();
@@ -23,6 +24,8 @@ connectDB();
 
 // Routes
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/products", productsRouter);
+
 app.get("/health", (_req: any, res: any) => {
     res.json({ status: "ok" });
 });
