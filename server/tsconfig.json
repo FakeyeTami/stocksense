@@ -40,7 +40,10 @@
         "esModuleInterop": true,
         "noUncheckedSideEffectImports": true,
         "moduleDetection": "force",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+
+        "typeRoots": ["./src/types", "./node_modules/@types"]
     },
-    "exclude": ["prisma.config.ts", "node_modules"]
+    "exclude": ["prisma.config.ts", "node_modules"],
+    "include": ["src/**/*"]
 }
