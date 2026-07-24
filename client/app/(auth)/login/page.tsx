@@ -48,9 +48,7 @@ export default function Login() {
     const onSubmit = async (data: LoginFormSchema) => {
         try {
             const response = await api.post("/api/v1/auth/login", data);
-            toast("Login successfully", {
-                description: `Welcome Back ${response.data.firstName}!`,
-            });
+            toast("Login successful");
             return response.data;
         } catch (error) {
             const axiosError = error as AxiosError<{ message?: string }>;

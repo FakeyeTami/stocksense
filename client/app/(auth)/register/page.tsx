@@ -58,9 +58,7 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterFormSchema) => {
         try {
-            const { confirmPassword, ...payload } = data;
-
-            const response = await api.post("/api/v1/auth/register", payload);
+            const response = await api.post("/api/v1/auth/register", data);
             toast("Registered successfully", {
                 description: `Welcome ${data.firstName}!`,
             });
@@ -118,7 +116,7 @@ export default function Register() {
                                         placeholder="Enter your last name"
                                         autoComplete="family-name"
                                         disabled={isSubmitting}
-                                        {...register("firstName")}
+                                        {...register("lastName")}
                                     />
                                     {errors.lastName && (
                                         <FieldError

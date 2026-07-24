@@ -1,67 +1,80 @@
+// services/auth.service.ts
 import * as bcrypt from "bcrypt";
+import slugify from "slugify";
 import { db } from "../config/db";
+import { LoginInput, RegisterInput } from "../schema/auth.schema";
 import { generateAuthToken } from "../utils/generateAuthToken";
 
-export const authenticateUser = async (email: string, password: string) => {
-    const existingUser = await db.user.findUnique({
-        where: { email },
+export const authenticateUser = async (data: LoginInput) => {
+    const user = await db.user.findUnique({
+        where: { email: data.email },
+        include: { ownedShops: true },
     });
+    if (!user) throw new Error("Invalid credentials");
 
-    if (!existingUser || !existingUser.hashedPassword)
-        throw new Error("User does not exist");
+    if (!user.hashedPassword) throw new Error("Invalid credentials");
 
     const isPasswordValid = await bcrypt.compare(
-        password,
-        existingUser.hashedPassword,
+        data.password,
+        user.hashedPassword,
     );
+    if (!isPasswordValid) throw new Error("Invalid credentials");
 
-    if (!isPasswordValid) {
-        throw new Error("Email and or Password is Incorrect");
-    }
+    const shop = user.ownedShops[0];
+    if (!shop) throw new Error("No shop found for this account");
 
-    const token = generateAuthToken(existingUser.id);
+    const token = generateAuthToken({
+        userId: user.id,
+        shopId: shop.id,
+        role: user.role,
+    });
 
-    const { hashedPassword: _removed, ...sanitizedUser } = existingUser;
+    const { hashedPassword: _, ...safeUser } = user;
 
-    return {
-        message: "Login successfully",
-        token,
-        user: sanitizedUser,
-    };
+    return { token, user: safeUser, shop };
 };
 
-export const registerNewUser = async (
-    firstName: string,
-    lastName: string,
-    phoneNo: string,
-    email: string,
-    password: string,
-) => {
+export const registerNewUser = async (data: RegisterInput) => {
     const existingUser = await db.user.findUnique({
-        where: { email },
+        where: { email: data.email },
+    });
+    if (existingUser) throw new Error("User already exists");
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    // transaction now returns user and shop
+    const { user, shop } = await db.$transaction(async (tx) => {
+        const user = await tx.user.create({
+            data: {
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                hashedPassword,
+                role: "OWNER",
+            },
+        });
+
+        const shop = await tx.shop.create({
+            data: {
+                name: "My Shop",
+                slug: slugify(`shop-${user.id}`, {
+                    lower: true,
+                    strict: true,
+                }),
+                adminId: user.id,
+            },
+        });
+
+        return { user, shop };
     });
 
-    if (existingUser) {
-        throw new Error("User already exists");
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await db.user.create({
-        data: {
-            firstName,
-            lastName,
-            email,
-            phoneNo,
-            hashedPassword,
-        },
+    const token = generateAuthToken({
+        userId: user.id,
+        shopId: shop.id,
+        role: user.role,
     });
 
-    const token = generateAuthToken(user.id);
+    const { hashedPassword: _, ...safeUser } = user;
 
-    return {
-        message: "Registered successfully",
-        token,
-    };
+    return { token, user: safeUser, shop };
 };
