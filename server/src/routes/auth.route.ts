@@ -1,13 +1,13 @@
-import { Router } from "express";
-import { validateRequest } from "../middlewares/validate.middleware";
-import { loginSchema, registerSchema } from "../schema/auth.schema";
+import { Router, type Router as ExpressRouter } from "express";
 import {
     handleLogin,
-    handleRegister,
     handleLogout,
+    handleRegister,
 } from "../controllers/auth.controller";
+import { validateRequest } from "../middlewares/validate.middleware";
+import { loginSchema, registerSchema } from "../schema/auth.schema";
 
-const authRouter = Router();
+const authRouter: ExpressRouter = Router();
 
 authRouter.post("/register", validateRequest(registerSchema), handleRegister);
 

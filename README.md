@@ -6,21 +6,21 @@
   <br>
 
   <p>
-    <a href="https://stocksense.vercel.app/">🌐 View Demo</a>
+    <a href="https://stocksense-client.vercel.app/">🌐 View Demo</a>
     &nbsp;·&nbsp;
-    <a href="https://github.com/yourusername/stocksense/issues/new?template=bug_report.md">🐛 Report Bug</a>
+    <a href="https://github.com/FakeyeTami/stocksense/issues/new?template=bug_report.md">🐛 Report Bug</a>
     &nbsp;·&nbsp;
-    <a href="https://github.com/yourusername/stocksense/issues/new?template=feature_request.md">✨ Request Feature</a>
+    <a href="https://github.com/FakeyeTami/stocksense/issues/new?template=feature_request.md">✨ Request Feature</a>
     &nbsp;·&nbsp;
     <a href="https://stocksense.vercel.app/docs">📖 Docs</a>
   </p>
 
   <br>
 
-  ![GitHub deployments](https://img.shields.io/github/deployments/yourusername/stocksense/production?style=for-the-badge&logo=vercel&logoColor=white&label=Vercel&labelColor=%23000&color=%2310b981)
-  ![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
-  ![License](https://img.shields.io/github/license/yourusername/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
-  ![GitHub stars](https://img.shields.io/github/stars/yourusername/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
+  ![GitHub deployments](https://img.shields.io/github/deployments/FakeyeTami/stocksense/production?style=for-the-badge&logo=vercel&logoColor=white&label=Vercel&labelColor=%23000&color=%2310b981)
+  ![GitHub last commit](https://img.shields.io/github/last-commit/FakeyeTami/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
+  ![License](https://img.shields.io/github/license/FakeyeTami/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
+  ![GitHub stars](https://img.shields.io/github/stars/FakeyeTami/stocksense?style=for-the-badge&labelColor=%23000&color=%2310b981)
 
 </div>
 

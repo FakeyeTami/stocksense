@@ -6,20 +6,215 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model User {
-    id  String @id @default(uuid())
-    firstName String
-    lastName String
-    phoneNo  String
-    email   String  @unique
-    hashedPassword   String?
-    role    Role    @default(STAFF)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-}
+// ─────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────
 
 enum Role {
     OWNER
     MANAGER
     STAFF
+}
+
+enum SupplierType {
+    MANUFACTURER
+    DISTRIBUTOR
+    WHOLESALER
+    RETAILER
+    OTHER
+}
+
+// ─────────────────────────────────────────
+// User & Auth
+// ─────────────────────────────────────────
+
+model User {
+    id             String   @id @default(cuid())
+    firstName      String
+    lastName       String
+    phoneNo        String?
+    email          String   @unique
+    hashedPassword String?
+    image          String?
+    role           Role     @default(STAFF)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    // Relations
+    ownedShops Shop[]      @relation("ShopAdmin")
+    staff      ShopStaff[]
+}
+
+// ─────────────────────────────────────────
+// Shop (tenant)
+// ─────────────────────────────────────────
+
+model Shop {
+    id       String  @id @default(cuid())
+    name     String
+    slug     String  @unique
+    location String?
+
+    // Owner
+    adminId String
+    admin   User   @relation("ShopAdmin", fields: [adminId], references: [id])
+
+    // Relations
+    staff      ShopStaff[]
+    products   Product[]
+    categories Category[]
+    brands     Brand[]
+    suppliers  Supplier[]
+    customers  Customer[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+// Join table: User <-> Shop (staff members)
+model ShopStaff {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role   Role   @default(STAFF)
+
+    createdAt DateTime @default(now())
+
+    @@unique([shopId, userId])
+}
+
+// ─────────────────────────────────────────
+// Inventory
+// ─────────────────────────────────────────
+
+model Product {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+    // Basic info
+    name        String
+    description String?
+    model       String?
+
+    // Relationships
+    categoryId String
+    category   Category  @relation(fields: [categoryId], references: [id])
+    supplierId String?
+    supplier   Supplier? @relation(fields: [supplierId], references: [id])
+    brandId    String?
+    brand      Brand?    @relation(fields: [brandId], references: [id])
+
+    // Pricing
+    costPrice    Decimal @db.Decimal(10, 2)
+    sellingPrice Decimal @db.Decimal(10, 2)
+
+    // Inventory
+    stock         Int
+    lowStockAlert Int     @default(10)
+    available     Boolean @default(true)
+
+    // Product details
+    sku          String    @unique
+    taxRate      Decimal?  @db.Decimal(5, 2)
+    expiryDate   DateTime?
+    warranty     String?
+    hsnCode      String?
+    returnPolicy String?
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    images ProductImage[]
+}
+
+model ProductImage {
+    id        String  @id @default(cuid())
+    url       String
+    isPrimary Boolean @default(false)
+
+    productId String
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+}
+
+model Category {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+    name        String
+    description String?
+
+    products Product[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([shopId, name]) // category names unique per shop, not globally
+}
+
+model Brand {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+    name String
+    logo String?
+
+    products Product[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([shopId, name])
+}
+
+model Supplier {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+    supplierType SupplierType
+    name         String
+    phoneNo      String?
+    email        String?
+    location     String?
+    country      String?
+    website      String?
+    logo         String?
+
+    products Product[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([shopId, email]) // email unique per shop, not globally
+}
+
+// ─────────────────────────────────────────
+// People
+// ─────────────────────────────────────────
+
+model Customer {
+    id     String @id @default(cuid())
+    shopId String
+    shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+    name     String
+    email    String?
+    phoneNo  String?
+    location String?
+    image    String?
+    status   Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([shopId, email]) // email unique per shop, not globally
 }
