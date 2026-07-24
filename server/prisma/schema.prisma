@@ -34,7 +34,7 @@ model User {
     lastName       String
     phoneNo        String?
     email          String   @unique
-    hashedPassword String?
+    hashedPassword String
     image          String?
     role           Role     @default(STAFF)
     createdAt      DateTime @default(now())
@@ -51,7 +51,7 @@ model User {
 
 model Shop {
     id       String  @id @default(cuid())
-    name     String
+    name     String  @default("My Shop")
     slug     String  @unique
     location String?
 
@@ -96,6 +96,7 @@ model Product {
 
     // Basic info
     name        String
+    slug        String  @unique
     description String?
     model       String?
 
@@ -149,6 +150,7 @@ model Category {
     shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
     name        String
+    slug        String  @unique
     description String?
 
     products Product[]
@@ -165,6 +167,7 @@ model Brand {
     shop   Shop   @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
     name String
+    slug String  @unique
     logo String?
 
     products Product[]
