@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -15,18 +14,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldGroup, FieldError } from "@/components/ui/field";
+import {
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import axios from "axios";
 import api from "@/lib/api";
+import { AxiosError } from "axios";
+import Link from "next/link";
 
 const RegisterFormSchema = z
     .object({
         firstName: z.string().min(3).max(16),
         lastName: z.string().min(3).max(16),
         email: z.string().email("Please enter a valid email."),
-        phoneNo: z.string().min(10, "Please enter a valid phone number."),
         password: z.string().min(8, "Password must be at least 8 characters."),
         confirmPassword: z.string().min(8),
     })
@@ -38,7 +41,11 @@ const RegisterFormSchema = z
 type RegisterFormSchema = z.infer<typeof RegisterFormSchema>;
 
 export default function Register() {
-    const form = useForm<RegisterFormSchema>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm<RegisterFormSchema>({
         resolver: zodResolver(RegisterFormSchema),
         defaultValues: {
             firstName: "",
@@ -51,219 +58,146 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterFormSchema) => {
         try {
-            const response = await api.post("/api/v1/auth/register", data);
+            const { confirmPassword, ...payload } = data;
 
+            const response = await api.post("/api/v1/auth/register", payload);
             toast("Registered successfully", {
                 description: `Welcome ${data.firstName}!`,
             });
             return response.data;
-        } catch (error: any) {
-            toast("Login failed", {
+        } catch (error) {
+            const axiosError = error as AxiosError<{ message?: string }>;
+
+            toast("Registration failed", {
                 description:
-                    error.response?.data?.message || "Something went wrong",
+                    axiosError.response?.data?.message ||
+                    "Something went wrong",
             });
         }
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gray-50">
-            <Card className="w-full max-w-4xl min-h-[480px] flex flex-row justify-center items-center overflow-hidden">
-                {/* Left Side */}
-                <div className="flex-1 flex flex-col justify-center space-y-10">
-                    <CardHeader>
-                        <CardTitle className="text-3xl font-semibold">
-                            Sign Up
-                        </CardTitle>
-                        <CardDescription className="text-base">
-                            Create your Stocksense account.
-                        </CardDescription>
-                    </CardHeader>
-
+        <main className="max-w-lg mx-auto py-10">
+            <Card>
+                <CardHeader className="text-center">
+                    <CardTitle className="font-bold text-lg">
+                        Create a new account
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground text-sm">
+                        Manage your business with ease
+                    </CardDescription>
+                </CardHeader>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <CardContent>
-                        <form
-                            id="sign-up-form"
-                            className="space-y-2"
-                            onSubmit={form.handleSubmit(onSubmit)}
-                        >
-                            <FieldGroup className="grid grid-cols-2 gap-6">
-                                <Field
-                                    data-invalid={
-                                        !!form.formState.errors.firstName
-                                    }
-                                >
+                        <FieldGroup>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Field data-invalid={!!errors.firstName}>
+                                    <FieldLabel htmlFor="firstName">
+                                        First Name
+                                    </FieldLabel>
                                     <Input
                                         id="firstName"
-                                        placeholder="First name"
-                                        aria-label="First name"
-                                        aria-invalid={
-                                            !!form.formState.errors.firstName
-                                        }
-                                        {...form.register("firstName")}
+                                        placeholder="Enter your first name"
+                                        autoComplete="given-name"
+                                        disabled={isSubmitting}
+                                        {...register("firstName")}
                                     />
-                                    {form.formState.errors.firstName && (
+                                    {errors.firstName && (
                                         <FieldError
-                                            errors={[
-                                                form.formState.errors.firstName,
-                                            ]}
+                                            errors={[errors.firstName]}
                                         />
                                     )}
                                 </Field>
 
-                                <Field
-                                    data-invalid={
-                                        !!form.formState.errors.lastName
-                                    }
-                                >
+                                <Field data-invalid={!!errors.lastName}>
+                                    <FieldLabel htmlFor="lastName">
+                                        Last Name
+                                    </FieldLabel>
                                     <Input
                                         id="lastName"
-                                        placeholder="Last name"
-                                        aria-label="Last name"
-                                        aria-invalid={
-                                            !!form.formState.errors.lastName
-                                        }
-                                        {...form.register("lastName")}
+                                        placeholder="Enter your last name"
+                                        autoComplete="family-name"
+                                        disabled={isSubmitting}
+                                        {...register("firstName")}
                                     />
-                                    {form.formState.errors.lastName && (
+                                    {errors.lastName && (
                                         <FieldError
-                                            errors={[
-                                                form.formState.errors.lastName,
-                                            ]}
+                                            errors={[errors.lastName]}
                                         />
                                     )}
                                 </Field>
+                            </div>
 
-                                <Field
-                                    data-invalid={!!form.formState.errors.email}
-                                >
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="Email"
-                                        aria-label="Email"
-                                        autoComplete="email"
-                                        aria-invalid={
-                                            !!form.formState.errors.email
-                                        }
-                                        {...form.register("email")}
-                                    />
-                                    {form.formState.errors.email && (
-                                        <FieldError
-                                            errors={[
-                                                form.formState.errors.email,
-                                            ]}
-                                        />
-                                    )}
-                                </Field>
+                            <Field data-invalid={!!errors.email}>
+                                <FieldLabel htmlFor="email">Email</FieldLabel>
+                                <Input
+                                    id="email"
+                                    placeholder="Enter your email"
+                                    autoComplete="email"
+                                    disabled={isSubmitting}
+                                    {...register("email")}
+                                />
+                                {errors.email && (
+                                    <FieldError errors={[errors.email]} />
+                                )}
+                            </Field>
 
-                                <Field
-                                    data-invalid={
-                                        !!form.formState.errors.phoneNo
-                                    }
-                                >
-                                    <Input
-                                        id="phoneNo"
-                                        type="tel"
-                                        placeholder="Phone number"
-                                        aria-label="Phone number"
-                                        autoComplete="tel"
-                                        aria-invalid={
-                                            !!form.formState.errors.phoneNo
-                                        }
-                                        {...form.register("phoneNo")}
-                                    />
-                                    {form.formState.errors.phoneNo && (
-                                        <FieldError
-                                            errors={[
-                                                form.formState.errors.phoneNo,
-                                            ]}
-                                        />
-                                    )}
-                                </Field>
+                            <Field data-invalid={!!errors.password}>
+                                <FieldLabel htmlFor="password">
+                                    Password
+                                </FieldLabel>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    autoComplete="password"
+                                    disabled={isSubmitting}
+                                    {...register("password")}
+                                />
+                                {errors.password && (
+                                    <FieldError errors={[errors.password]} />
+                                )}
+                            </Field>
 
-                                <Field
-                                    data-invalid={
-                                        !!form.formState.errors.password
-                                    }
-                                >
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        placeholder="Password"
-                                        aria-label="Password"
-                                        autoComplete="new-password"
-                                        aria-invalid={
-                                            !!form.formState.errors.password
-                                        }
-                                        {...form.register("password")}
+                            <Field data-invalid={!!errors.confirmPassword}>
+                                <FieldLabel htmlFor="confirmPassword">
+                                    Confirm Password
+                                </FieldLabel>
+                                <Input
+                                    id="confirmPassword"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    autoComplete="password"
+                                    disabled={isSubmitting}
+                                    {...register("confirmPassword")}
+                                />
+                                {errors.confirmPassword && (
+                                    <FieldError
+                                        errors={[errors.confirmPassword]}
                                     />
-                                    {form.formState.errors.password && (
-                                        <FieldError
-                                            errors={[
-                                                form.formState.errors.password,
-                                            ]}
-                                        />
-                                    )}
-                                </Field>
-
-                                <Field
-                                    data-invalid={
-                                        !!form.formState.errors.confirmPassword
-                                    }
-                                >
-                                    <Input
-                                        id="confirmPassword"
-                                        type="password"
-                                        placeholder="Confirm password"
-                                        aria-label="Confirm password"
-                                        autoComplete="new-password"
-                                        aria-invalid={
-                                            !!form.formState.errors
-                                                .confirmPassword
-                                        }
-                                        {...form.register("confirmPassword")}
-                                    />
-                                    {form.formState.errors.confirmPassword && (
-                                        <FieldError
-                                            errors={[
-                                                form.formState.errors
-                                                    .confirmPassword,
-                                            ]}
-                                        />
-                                    )}
-                                </Field>
-                            </FieldGroup>
-                        </form>
+                                )}
+                            </Field>
+                        </FieldGroup>
                     </CardContent>
-
-                    <CardFooter className="flex-col space-y-4">
+                    <CardFooter className="flex flex-col gap-5 mt-4">
                         <Button
                             type="submit"
-                            form="sign-up-form"
                             className="w-full"
+                            disabled={isSubmitting}
                         >
-                            Sign Up
+                            {isSubmitting ? "Creating account..." : "Sign Up"}
                         </Button>
-                        <div className="flex flex-row justify-between items-center">
-                            <span>
-                                Already have an account?{" "}
-                                <Link href="../login" className="text-blue-400">
-                                    Sign In
-                                </Link>
-                            </span>
-                        </div>
+                        <p className="text-sm text-center text-muted-foreground">
+                            Already have an account?{" "}
+                            <Link
+                                href="/login"
+                                className="underling hover:text-primary"
+                            >
+                                Sign In
+                            </Link>
+                        </p>
                     </CardFooter>
-                </div>
-
-                {/* Right Side Image */}
-                <div className="hidden md:flex flex-1 items-center justify-center">
-                    <Image
-                        src="/assets/images/login.png"
-                        width={318}
-                        height={344}
-                        className="object-contain"
-                        alt="Login Image"
-                    />
-                </div>
+                </form>
             </Card>
         </main>
     );
