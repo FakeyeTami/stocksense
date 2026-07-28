@@ -4,6 +4,7 @@ import {
     deleteProduct,
     getProduct,
     getProducts,
+    updateProduct,
 } from "../services/products.service";
 
 export const handleGetProducts = async (
@@ -13,22 +14,20 @@ export const handleGetProducts = async (
 ) => {
     try {
         const products = await getProducts(req.user!.shopId);
-        res.json(products);
+        res.status(200).json(products);
     } catch (error) {
         next(error);
     }
 };
 
 export const handleGetProduct = async (
-    req: Request,
+    req: Request<{ id: string }>,
     res: Response,
     next: NextFunction,
 ) => {
     try {
         const product = await getProduct(req.params.id, req.user!.shopId);
-        if (!product)
-            return res.status(404).json({ message: "Product not found" });
-        res.json(product);
+        res.status(200).json(product);
     } catch (error) {
         next(error);
     }
@@ -50,10 +49,25 @@ export const handleCreateProduct = async (
     }
 };
 
-export const handleUpdateProduct = async () => {};
+export const handleUpdateProduct = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const product = await updateProduct(
+            req.params.id,
+            req.user!.shopId,
+            req.body,
+        );
+        res.status(201).json(product);
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const handleDeleteProduct = async (
-    req: Request,
+    req: Request<{ id: string }>,
     res: Response,
     next: NextFunction,
 ) => {

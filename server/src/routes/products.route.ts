@@ -1,11 +1,12 @@
 import { Router, type Router as ExpressRouter } from "express";
 import {
     handleCreateProduct,
-    handleDeleteProducts,
+    handleDeleteProduct,
     handleGetProduct,
     handleGetProducts,
     handleUpdateProduct,
 } from "../controllers/products.controller";
+import { authenticate } from "../middlewares/auth.middleware";
 import { validateRequest } from "../middlewares/validate.middleware";
 import {
     createProductSchema,
@@ -14,7 +15,7 @@ import {
 
 const productsRouter: ExpressRouter = Router();
 
-productsRouter.use();
+productsRouter.use(authenticate);
 
 productsRouter.get("/", handleGetProducts);
 
@@ -32,6 +33,6 @@ productsRouter.put(
     handleUpdateProduct,
 );
 
-productsRouter.delete("/:id", handleDeleteProducts);
+productsRouter.delete("/:id", handleDeleteProduct);
 
 export default productsRouter;

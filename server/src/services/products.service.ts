@@ -29,6 +29,10 @@ export const getProduct = async (id: string, shopId: string) => {
             images: true,
         },
     });
+
+    if (!product) throw new Error("Product not found");
+
+    return product;
 };
 
 export const createProduct = async (data: any & { shopId: string }) => {

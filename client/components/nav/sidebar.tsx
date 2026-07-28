@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Button } from "@/components/ui/button";
-=======
 import { Separator } from "@/components/ui/separator";
->>>>>>> feature/dashboard
 import { SidebarSection } from "@/types/sidebar-section.types";
 import {
     Bot,
@@ -26,8 +22,6 @@ import {
     UsersRound,
 } from "lucide-react";
 import Link from "next/link";
-<<<<<<< HEAD
-=======
 import {
     Sidebar,
     SidebarContent,
@@ -38,7 +32,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "../ui/sidebar";
->>>>>>> feature/dashboard
 
 export function SideBar() {
     const sidebarNavigation: SidebarSection[] = [
