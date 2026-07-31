@@ -28,6 +28,7 @@ import { RegisterFormSchema } from "../schema";
 
 export default function Register() {
     const router = useRouter();
+    const setUser = useAuthStore((state) => state.setUser);
 
     const {
         register,
@@ -46,10 +47,10 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterFormSchema) => {
         try {
-            const user = await registerUser(data);
-
+            const { user } = await registerUser(data);
+            setUser(user);
             toast("Registered successfully", {
-                description: `Welcome ${user.firstName}!`,
+                description: `Welcome back, ${user.firstName}!`,
             });
 
             router.replace("/dashboard");

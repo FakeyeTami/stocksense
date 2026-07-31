@@ -22,12 +22,14 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginUser } from "@/services/auth";
+import { useAuthStore } from "@/store/auth.store";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { LoginFormSchema, loginFormSchema } from "../schema";
 
 export default function Login() {
     const router = useRouter();
+    const setUser = useAuthStore((state) => state.setUser);
 
     const {
         register,
@@ -43,7 +45,8 @@ export default function Login() {
 
     const onSubmit = async (data: LoginFormSchema) => {
         try {
-            await loginUser(data);
+            const { user } = await loginUser(data);
+            setUser(user);
             toast("Login successful");
 
             router.push("/dashboard");
