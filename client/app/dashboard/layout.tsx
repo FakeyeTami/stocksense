@@ -12,7 +12,7 @@ export default async function DashboardLayout({
 }) {
     const cookieStore = await cookies();
 
-    if (!cookieStore.get("access_token")) {
+    if (!cookieStore.get("jwt")) {
         redirect("/login");
     }
 
