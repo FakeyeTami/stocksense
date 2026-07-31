@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,26 +20,15 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import api from "@/lib/api";
+import { registerUser } from "@/services/auth";
 import { AxiosError } from "axios";
 import Link from "next/link";
-
-const RegisterFormSchema = z
-    .object({
-        firstName: z.string().min(3).max(16),
-        lastName: z.string().min(3).max(16),
-        email: z.string().email("Please enter a valid email."),
-        password: z.string().min(8, "Password must be at least 8 characters."),
-        confirmPassword: z.string().min(8),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords do not match.",
-        path: ["confirmPassword"],
-    });
-
-type RegisterFormSchema = z.infer<typeof RegisterFormSchema>;
+import { useRouter } from "next/navigation";
+import { RegisterFormSchema } from "../schema";
 
 export default function Register() {
+    const router = useRouter();
+
     const {
         register,
         handleSubmit,
@@ -58,11 +46,13 @@ export default function Register() {
 
     const onSubmit = async (data: RegisterFormSchema) => {
         try {
-            const response = await api.post("/api/v1/auth/register", data);
+            const user = await registerUser(data);
+
             toast("Registered successfully", {
-                description: `Welcome ${data.firstName}!`,
+                description: `Welcome ${user.firstName}!`,
             });
-            return response.data;
+
+            router.replace("/dashboard");
         } catch (error) {
             const axiosError = error as AxiosError<{ message?: string }>;
 
@@ -75,8 +65,8 @@ export default function Register() {
     };
 
     return (
-        <main className="max-w-lg mx-auto py-10">
-            <Card>
+        <main className="min-h-screen flex items-center justify-center">
+            <Card className="w-full max-w-md">
                 <CardHeader className="text-center">
                     <CardTitle className="font-bold text-lg">
                         Create a new account
@@ -87,7 +77,7 @@ export default function Register() {
                 </CardHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <CardContent>
-                        <FieldGroup>
+                        <FieldGroup className="space-y-1.5">
                             <div className="grid grid-cols-2 gap-3">
                                 <Field data-invalid={!!errors.firstName}>
                                     <FieldLabel htmlFor="firstName">
