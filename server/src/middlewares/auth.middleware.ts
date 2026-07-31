@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 import { TokenPayload } from "../utils/generateAuthToken";
 
 export function authenticate(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers.authorization?.split(" ")[1];
+    const headerToken = req.headers.authorization?.split(" ")[1];
+    const cookieToken = req.cookies?.jwt;
+
+    const token = headerToken ?? cookieToken;
+
     if (!token) return res.status(401).json({ message: "Unauthorized" });
 
     try {

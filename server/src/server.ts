@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import { connectDB } from "./config/db";
@@ -14,6 +15,7 @@ const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(
     cors({
         origin: process.env.CLIENT_URL || "http://localhost:3000",

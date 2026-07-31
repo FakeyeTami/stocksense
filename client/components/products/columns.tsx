@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Input } from "../ui/input";
 
 export type Product = {
     id: string;
@@ -30,7 +29,7 @@ export const columns: ColumnDef<Product>[] = [
     {
         id: "select",
         header: ({ table }) => (
-            <Input
+            <input
                 type="checkbox"
                 checked={table.getIsAllPageRowsSelected()}
                 onChange={(e) =>
@@ -39,7 +38,7 @@ export const columns: ColumnDef<Product>[] = [
             />
         ),
         cell: ({ row }) => (
-            <Input
+            <input
                 type="checkbox"
                 checked={row.getIsSelected()}
                 onChange={(e) => row.toggleSelected(e.target.checked)}

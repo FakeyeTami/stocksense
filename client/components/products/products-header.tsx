@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import Link from "next/link";
 
 export function ProductsHeader() {
     return (
@@ -13,10 +14,12 @@ export function ProductsHeader() {
             </div>
 
             <div className="flex gap-3">
-                <Button type="button">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Product
-                </Button>
+                <Link href="/dashboard/products/new">
+                    <Button type="button">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Product
+                    </Button>
+                </Link>
 
                 <Button type="button" variant="secondary">
                     Import Product

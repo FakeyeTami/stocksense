@@ -2,10 +2,18 @@ import { columns } from "@/components/products/columns";
 import { DataTable } from "@/components/products/data-table";
 import { ProductsHeader } from "@/components/products/products-header";
 import api from "@/lib/api";
+import { cookies } from "next/headers";
 
 const getProducts = async () => {
     try {
-        const response = await api.get("/api/v1/products");
+        const cookieStore = await cookies();
+        const token = cookieStore.get("jwt")?.value;
+
+        const response = await api.get("/api/v1/products", {
+            headers: {
+                Cookie: `jwt=${token}`,
+            },
+        });
         return { data: response.data || [], error: null };
     } catch (error) {
         return { data: [], error: `Failed to load products, ${error}` };

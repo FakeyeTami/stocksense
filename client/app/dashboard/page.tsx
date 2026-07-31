@@ -9,10 +9,6 @@ export default function Dashboard() {
     return (
         <section>
             <DashboardOverview />
-
-            <h3>{`${user?.firstName} ${user?.lastName}`}</h3>
-            <p>{user?.email}</p>
-            <p>{user?.role}</p>
         </section>
     );
 }
