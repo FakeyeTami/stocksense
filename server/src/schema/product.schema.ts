@@ -5,23 +5,31 @@ export const createProductSchema = z.object({
     description: z.string().max(300).optional(),
     model: z.string().max(16).optional(),
 
-    categoryId: z.string().cuid("Invalid category"),
-    supplierId: z.string().cuid("Invalid supplier").optional(),
-    brandId: z.string().cuid("Invalid brand").optional(),
+    categoryId: z.string("Invalid category"),
+    supplierId: z.string("Invalid supplier").optional(),
+    brandId: z.string("Invalid brand").optional(),
 
-    costPrice: z.number().positive("Cost price required"),
-    sellingPrice: z.number().positive("Selling price required"),
+    costPrice: z.coerce.number().positive("Cost price required"),
+    sellingPrice: z.coerce.number().positive("Selling price required"),
 
-    stock: z.number().int().min(0).max(99999),
-    lowStockAlert: z.number().int().min(0).default(10),
+    stock: z.coerce.number().int().min(0).max(99999),
+    lowStockAlert: z.coerce.number().int().min(0).default(10),
     available: z.boolean().default(true),
 
     sku: z.string().min(1, "SKU is required"),
-    taxRate: z.number().min(0).max(100).optional(),
-    expiryDate: z.string().datetime().optional(),
+    taxRate: z.coerce.number().min(0).max(100).optional(),
+    expiryDate: z.string().optional(),
     warranty: z.string().max(100).optional(),
     hsnCode: z.string().max(20).optional(),
-    returnPolicy: z.string().max(500).optional(),
+    returnPolicy: z
+        .enum([
+            "NOT_RETURNABLE",
+            "7_DAYS",
+            "10_DAYS",
+            "30_DAYS",
+            "REPLACEMENT_ONLY",
+        ])
+        .optional(),
 });
 
 export const updateProductSchema = createProductSchema.partial();
