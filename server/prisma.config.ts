@@ -1,14 +1,12 @@
-import * as dotenv from "dotenv";
-import type { PrismaConfig } from "prisma";
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
 
-dotenv.config();
-
-export default {
+export default defineConfig({
     schema: "prisma/schema.prisma",
     migrations: {
         path: "prisma/migrations",
     },
     datasource: {
-        url: "postgresql://postgres:tamicodes@localhost:5432/stocksense",
+        url: env("DATABASE_URL"),
     },
-} satisfies PrismaConfig;
+});
