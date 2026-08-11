@@ -13,7 +13,7 @@ import productsRouter from "./routes/products.route";
 
 // app config
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 4000;
 
 // Middleware
 app.use(express.json());
@@ -38,6 +38,6 @@ app.get("/health", (_req: any, res: any) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server is running on port ${PORT}`);
 });
