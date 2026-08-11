@@ -76,7 +76,12 @@ export function ProductForm({
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
 
-    const form = useForm<CreateProductInput>({
+    const form = useForm<
+        z.input<typeof createProductSchema>,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        any,
+        z.output<typeof createProductSchema>
+    >({
         resolver: zodResolver(createProductSchema),
         defaultValues: {
             name: "",
