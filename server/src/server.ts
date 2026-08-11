@@ -7,6 +7,8 @@ import express from "express";
 import { connectDB } from "./config/db";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import authRouter from "./routes/auth.route";
+import brandsRouter from "./routes/brands.route";
+import categoriesRouter from "./routes/category.route";
 import productsRouter from "./routes/products.route";
 
 // app config
@@ -27,6 +29,8 @@ connectDB();
 // Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/products", productsRouter);
+app.use("/api/v1/categories", categoriesRouter);
+app.use("/api/v1/brands", brandsRouter);
 
 app.get("/health", (_req: any, res: any) => {
     res.json({ status: "ok" });

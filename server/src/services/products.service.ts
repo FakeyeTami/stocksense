@@ -1,3 +1,4 @@
+import slugify from "slugify";
 import { db } from "../config/db";
 
 export const getProducts = async (shopId: string) => {
@@ -13,7 +14,7 @@ export const getProducts = async (shopId: string) => {
 
     if (!products) throw new Error("You have no Products, Please create one");
 
-    return products.map(({ costPrice, ...product }) => product);
+    return products.map(({ ...product }) => product);
 };
 
 export const getProduct = async (id: string, shopId: string) => {
@@ -46,9 +47,29 @@ export const createProduct = async (data: any & { shopId: string }) => {
 
     const product = await db.product.create({
         data: {
-            ...data,
-            constPrice: data.costPrice,
+            name: data.name,
+            slug: slugify(data.name, { lower: true, strict: true }), // ← add this
+            description: data.description || undefined,
+            categoryId: data.categoryId,
+            supplierId: data.supplierId || undefined,
+            brandId: data.brandId || undefined,
+            costPrice: data.costPrice, // ← not constPrice
             sellingPrice: data.sellingPrice,
+            stock: data.stock,
+            lowStockAlert: data.lowStockAlert,
+            available: data.available,
+            sku: data.sku,
+            taxRate: data.taxRate || undefined,
+            expiryDate: data.expiryDate || undefined,
+            warranty: data.warranty || undefined,
+            hsnCode: data.hsnCode || undefined,
+            returnPolicy: data.returnPolicy || undefined,
+            shopId: data.shopId,
+        },
+        include: {
+            category: true,
+            brand: true,
+            supplier: true,
         },
     });
 

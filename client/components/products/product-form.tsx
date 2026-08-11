@@ -49,7 +49,13 @@ const createProductSchema = z.object({
     warranty: z.string().max(100).optional(),
     hsnCode: z.string().max(20).optional(),
     returnPolicy: z
-        .enum(["NOT_RETURNABLE", "7_DAYS", "10_DAYS", "REPLACEMENT_ONLY"])
+        .enum([
+            "NOT_RETURNABLE",
+            "7_DAYS",
+            "10_DAYS",
+            "30_DAYS",
+            "REPLACEMENT_ONLY",
+        ])
         .optional(),
 });
 
@@ -173,7 +179,7 @@ export function ProductForm({
                                     <FormControl>
                                         <CreatableSelect
                                             options={categories}
-                                            value={field.value}
+                                            value={field.value ?? ""}
                                             onChange={field.onChange}
                                             placeholder="Select or create"
                                             onCreate={createCategory}
@@ -430,7 +436,7 @@ export function ProductForm({
                             control={form.control}
                             name="hsnCode"
                             render={({ field }) => (
-                                <FormItem>
+                                <FormItem className="col-span-2">
                                     <FormLabel>
                                         HSN Code
                                         <span className="text-muted-foreground font-normal ml-1">

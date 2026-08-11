@@ -1,20 +1,20 @@
 import { Router, type Router as ExpressRouter } from "express";
+import {
+    handleCreateBrand,
+    handleGetBrands,
+} from "../controllers/brands.controller";
 import { authenticate } from "../middlewares/auth.middleware";
 import { validateRequest } from "../middlewares/validate.middleware";
 import { createCategorySchema } from "../schema/category.schema";
-import {
-    handleGetCategories,
-    handleCreateCategory,
-} from "../controllers/category.controller";
 
-const categoriesRouter: ExpressRouter = Router();
+const brandsRouter: ExpressRouter = Router();
 
-categoriesRouter.use(authenticate);
-categoriesRouter.get("/", handleGetCategories);
-categoriesRouter.post(
+brandsRouter.use(authenticate);
+brandsRouter.get("/", handleGetBrands);
+brandsRouter.post(
     "/",
     validateRequest(createCategorySchema),
-    handleCreateCategory,
+    handleCreateBrand,
 );
 
-export default categoriesRouter;
+export default brandsRouter;

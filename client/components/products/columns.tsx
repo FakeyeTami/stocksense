@@ -7,16 +7,19 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Package } from "lucide-react";
 
 export type Product = {
     id: string;
     name: string;
     sku: string;
+    image?: string;
     category: { name: string };
+    brand?: { name: string } | null;
     sellingPrice: number;
     costPrice: number;
     stock: number;
@@ -47,7 +50,18 @@ export const columns: ColumnDef<Product>[] = [
         enableSorting: false,
     },
 
-    // Product name + SKU
+    // Product ID
+    {
+        accessorKey: "id",
+        header: "Product ID",
+        cell: ({ row }) => (
+            <span className="text-xs font-mono text-muted-foreground">
+                #{row.original.id.slice(-8).toUpperCase()}
+            </span>
+        ),
+    },
+
+    // Product — image + name
     {
         accessorKey: "name",
         header: ({ column }) => (
@@ -59,66 +73,47 @@ export const columns: ColumnDef<Product>[] = [
                 className="-ml-4"
             >
                 Product
-                <ArrowUpDown className="ml-2 h-3 w-3" />
             </Button>
         ),
-        cell: ({ row }) => (
-            <div>
-                <div className="font-medium">{row.getValue("name")}</div>
-                <div className="text-xs text-muted-foreground font-mono">
-                    {row.original.sku}
+        cell: ({ row }) => {
+            const { name, sku, image } = row.original;
+            return (
+                <div className="flex items-center gap-3">
+                    {/* Logo / thumbnail */}
+                    <div className="w-9 h-9 rounded-md border bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {image ? (
+                            <img
+                                src={image}
+                                alt={name}
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <Package className="h-4 w-4 text-muted-foreground" />
+                        )}
+                    </div>
+                    {/* Name + SKU */}
+                    <div className="min-w-0">
+                        <p className="font-medium text-sm leading-none truncate">
+                            {name}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-mono mt-1">
+                            {sku}
+                        </p>
+                    </div>
                 </div>
-            </div>
-        ),
+            );
+        },
     },
 
     // Category
     {
         accessorKey: "category",
         header: "Category",
-        cell: ({ row }) => row.original.category.name,
-    },
-
-    // Stock with visual indicator
-    {
-        accessorKey: "stock",
-        header: "Stock",
-        cell: ({ row }) => {
-            const stock = row.original.stock;
-            const lowStockAlert = row.original.lowStockAlert;
-            const isLow = stock <= lowStockAlert;
-            const isOut = stock === 0;
-
-            return (
-                <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                        <div
-                            className="h-full rounded-full transition-all"
-                            style={{
-                                width: `${Math.min((stock / 200) * 100, 100)}%`,
-                                background: isOut
-                                    ? "#DC2626"
-                                    : isLow
-                                      ? "#D97706"
-                                      : "#16A34A",
-                            }}
-                        />
-                    </div>
-                    <span
-                        className="text-sm font-medium tabular-nums"
-                        style={{
-                            color: isOut
-                                ? "#DC2626"
-                                : isLow
-                                  ? "#D97706"
-                                  : "#16A34A",
-                        }}
-                    >
-                        {stock}
-                    </span>
-                </div>
-            );
-        },
+        cell: ({ row }) => (
+            <span className="text-sm text-muted-foreground">
+                {row.original.category?.name ?? "—"}
+            </span>
+        ),
     },
 
     // Selling price
@@ -133,48 +128,111 @@ export const columns: ColumnDef<Product>[] = [
                 className="-ml-4"
             >
                 Price
-                <ArrowUpDown className="ml-2 h-3 w-3" />
             </Button>
         ),
         cell: ({ row }) => {
-            const price = parseFloat(row.getValue("sellingPrice"));
-            return <span className="font-medium">£{price.toFixed(2)}</span>;
-        },
-    },
-
-    // Status badge
-    {
-        accessorKey: "available",
-        header: "Status",
-        cell: ({ row }) => {
-            const stock = row.original.stock;
-            const threshold = row.original.lowStockAlert;
-
-            if (stock === 0) {
-                return (
-                    <Badge variant="outline" className="text-muted-foreground">
-                        Out of stock
-                    </Badge>
-                );
-            }
-            if (stock <= threshold) {
-                return (
-                    <Badge className="bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-50">
-                        Low stock
-                    </Badge>
-                );
-            }
+            const price = Number(row.getValue("sellingPrice"));
             return (
-                <Badge className="bg-green-50 text-green-700 border border-green-200 hover:bg-green-50">
-                    In stock
-                </Badge>
+                <span className="font-medium text-sm">£{price.toFixed(2)}</span>
             );
         },
     },
 
-    // Actions dropdown
+    // QTY — plain number
+    {
+        accessorKey: "stock",
+        header: "QTY",
+        cell: ({ row }) => (
+            <span className="text-sm tabular-nums font-medium">
+                {row.original.stock}
+            </span>
+        ),
+    },
+
+    // Stock — status badge with bar
+    {
+        id: "stockStatus",
+        header: "Stock",
+        cell: ({ row }) => {
+            const { stock, lowStockAlert } = row.original;
+            const isOut = stock === 0;
+            const isLow = stock <= lowStockAlert && stock > 0;
+
+            return (
+                <div className="flex items-center gap-2">
+                    <div className="w-14 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                            className="h-full rounded-full"
+                            style={{
+                                width: `${Math.min((stock / (lowStockAlert * 10)) * 100, 100)}%`,
+                                background: isOut
+                                    ? "#DC2626"
+                                    : isLow
+                                      ? "#D97706"
+                                      : "#16A34A",
+                            }}
+                        />
+                    </div>
+                    {isOut ? (
+                        <Badge
+                            variant="outline"
+                            className="text-muted-foreground text-xs"
+                        >
+                            Out
+                        </Badge>
+                    ) : isLow ? (
+                        <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-xs hover:bg-amber-50">
+                            Low
+                        </Badge>
+                    ) : (
+                        <Badge className="bg-green-50 text-green-700 border-green-200 text-xs hover:bg-green-50">
+                            OK
+                        </Badge>
+                    )}
+                </div>
+            );
+        },
+    },
+
+    // Brand
+    {
+        accessorKey: "brand",
+        header: "Brand",
+        cell: ({ row }) => (
+            <span className="text-sm text-muted-foreground">
+                {row.original.brand?.name ?? "—"}
+            </span>
+        ),
+    },
+
+    // Cost price
+    {
+        accessorKey: "costPrice",
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() =>
+                    column.toggleSorting(column.getIsSorted() === "asc")
+                }
+                className="-ml-4"
+            >
+                Cost
+            </Button>
+        ),
+        cell: ({ row }) => {
+            const cost = Number(row.getValue("costPrice"));
+            return (
+                <span className="text-sm text-muted-foreground">
+                    £{cost.toFixed(2)}
+                </span>
+            );
+        },
+    },
+
+    // Actions
     {
         id: "actions",
+        header: "Action",
         cell: ({ row }) => {
             const product = row.original;
             return (
@@ -192,8 +250,17 @@ export const columns: ColumnDef<Product>[] = [
                         >
                             Copy SKU
                         </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() =>
+                                navigator.clipboard.writeText(product.id)
+                            }
+                        >
+                            Copy ID
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem>Edit product</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive focus:text-destructive">
                             Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>
